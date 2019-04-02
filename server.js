@@ -32,8 +32,8 @@ server.get("/api/users", (req, res) => {
 server.post("/api/register", (req, res) => {
   let user = req.body;
   // //hash the password
-  // const hash = bcrypt.hashSync(user.password, 4);
-  // user.password = hash;
+  const hash = bcrypt.hashSync(user.password, 4);
+  user.password = hash;
   //post user
   db("users")
     .insert(user)
