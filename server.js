@@ -23,7 +23,7 @@ server.get("/", (req, res) => {
 //restrict access to endpoint
 // | GET    | /api/users    | If the user is logged in, respond with an array of all the users contained in the database. If the user is not logged in repond with the correct status code and the message: 'You shall not pass!'.
 
-server.get("/api/users", restricted, (req, res) => {
+server.get("/api/users", restricted, only("olympia"), (req, res) => {
   db("users")
     .then(users => {
       res.status(200).json(users);
@@ -51,6 +51,16 @@ function restricted(req, res, next) {
   } else {
     res.status(401).json({ message: "Please provide credentials" });
   }
+}
+
+function only(name) {
+  return function(req, res, next) {
+    if (req.headers.name.toUpperCase() === name.toUpperCase()) {
+      next();
+    } else {
+      res.status(403).json({ message: "You are not olympia" });
+    }
+  };
 }
 
 //register new username and password
