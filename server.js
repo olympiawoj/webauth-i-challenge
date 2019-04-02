@@ -38,7 +38,7 @@ server.get("/", (req, res) => {
 //restrict access to endpoint
 // | GET    | /api/users    | If the user is logged in, respond with an array of all the users contained in the database. If the user is not logged in repond with the correct status code and the message: 'You shall not pass!'.
 
-server.get("/api/users", restricted, only("olympia"), (req, res) => {
+server.get("/api/users", restricted, (req, res) => {
   db("users")
     .then(users => {
       res.status(200).json(users);
