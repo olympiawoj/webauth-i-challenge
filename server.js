@@ -1,12 +1,23 @@
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
-const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const db = require("./data/dbConfig.js");
 const restricted = require("./auth/restricted-middleware.js");
 
 const server = express();
+
+const sessionConfig = {
+  name: "monster",
+  secret: "Keep it secret and safe",
+  cookie: {
+    maxAge: 1000 * 60 * 10,
+    secure: false,
+    httpOnly: true
+  },
+  resave: false,
+  saveUninitialized: false
+};
 
 //import routers here
 const authRouter = require("./auth/auth-router.js");
@@ -14,6 +25,7 @@ const authRouter = require("./auth/auth-router.js");
 server.use(helmet());
 server.use(express.json());
 server.use(cors());
+server.use(session(sessionConfig));
 
 //use routers here
 server.use("/api/auth", authRouter);
