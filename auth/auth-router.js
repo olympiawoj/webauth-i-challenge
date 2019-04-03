@@ -40,28 +40,49 @@ router.post("/register", async (req, res) => {
 });
 
 //LOGIN: THEN & CATCH
-router.post("/login", (req, res) => {
+// router.post("/login", (req, res) => {
+//   let { name, password } = req.body;
+//   console.log(name, password);
+
+//   Users.findBy({ name })
+//     .then(user => {
+//       //check password against db
+//       console.log(user);
+//       if (user && bcrypt.compareSync(password, user.password)) {
+//         req.session.user = user;
+//         res.status(200).json({ message: `Welcome ${user.name}` });
+//       } else {
+//         res.status(401).json({ message: "Invalid credentials" });
+//       }
+//     })
+//     .catch(error => {
+//       res.status(500).json(error);
+//     });
+// });
+
+//LOGIN: ASYNC & AWAIT
+router.post("/login", async (req, res) => {
   let { name, password } = req.body;
   console.log(name, password);
 
-  Users.findBy({ name })
-    .then(user => {
-      //check password against db
-      console.log(user);
+  try {
+    if (name && password) {
+      const user = await Users.findBy({ name });
       if (user && bcrypt.compareSync(password, user.password)) {
         req.session.user = user;
         res.status(200).json({ message: `Welcome ${user.name}` });
       } else {
         res.status(401).json({ message: "Invalid credentials" });
       }
-    })
-    .catch(error => {
-      res.status(500).json(error);
-    });
+    } else {
+      res.status(400).json({ message: "Please include a name and password" });
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 
-//LOGIN: ASYNC & AWAIT
-
+//LOGOUT
 router.get("/logout", (req, res) => {
   req.session.destroy(err => {
     if (err) {
