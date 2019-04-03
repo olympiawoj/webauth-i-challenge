@@ -2,6 +2,9 @@ const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const session = require("express-session");
+const KnexSessionStore = require("connect-session-knex")(session);
+
+//dbConfig import
 const db = require("./data/dbConfig.js");
 const restricted = require("./auth/restricted-middleware.js");
 
@@ -16,7 +19,14 @@ const sessionConfig = {
     httpOnly: true
   },
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: true,
+  store: new KnexSessionStore({
+    knex: db,
+    tablename: "sessions",
+    sidfieldname: "sid",
+    createTable: true,
+    clearIntervale: 1000 * 60 * 30 //delete expired sessions
+  })
 };
 
 //import routers here
