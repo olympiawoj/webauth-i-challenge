@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const db = require("../data/dbConfig.js");
+const Users = require("../users/users-model.js");
 
 //register new username and password
 router.post("/register", (req, res) => {
@@ -10,14 +11,16 @@ router.post("/register", (req, res) => {
   const hash = bcrypt.hashSync(user.password, 4);
   user.password = hash;
   //post user
-  db("users")
-    .insert(user)
-    .then(ids => {
-      console.log(ids);
-      const id = ids[0];
-      db("users")
-        .where({ user_id: id })
-        .then(ids => res.status(201).json(ids));
+  Users.add(user)
+    .then(saved => {
+      console.log(saved);
+      //   console.log(ids);
+      //   const id = ids[0];
+      //   db("users")
+      //     .where({ user_id: id })
+      //     .then(ids => res.status(201).json(ids));
+      // })
+      res.status(201).json(saved);
     })
     .catch(error => {
       res.status(500).json(error);
