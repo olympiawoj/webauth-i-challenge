@@ -14,12 +14,6 @@ router.post("/register", (req, res) => {
   Users.add(user)
     .then(saved => {
       console.log(saved);
-      //   console.log(ids);
-      //   const id = ids[0];
-      //   db("users")
-      //     .where({ user_id: id })
-      //     .then(ids => res.status(201).json(ids));
-      // })
       res.status(201).json(saved);
     })
     .catch(error => {
@@ -31,8 +25,8 @@ router.post("/register", (req, res) => {
 router.post("/login", (req, res) => {
   let { name, password } = req.body;
   console.log(name, password);
-  db("users")
-    .where({ name })
+
+  Users.findBy({ name })
     .first()
     .then(user => {
       //check password against db
