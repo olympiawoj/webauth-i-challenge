@@ -2,25 +2,44 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const Users = require("../users/users-model.js");
 
-//register new username and password
-router.post("/register", (req, res) => {
+//REGISTER: THEN & CATCH
+// router.post("/register", (req, res) => {
+//   let user = req.body;
+//   console.log(user);
+//   // //hash the password
+//   const hash = bcrypt.hashSync(user.password, 4);
+//   user.password = hash;
+//   //post user
+//   Users.add(user)
+//     .then(saved => {
+//       console.log(saved);
+//       res.status(201).json(saved);
+//     })
+//     .catch(error => {
+//       res.status(500).json(error);
+//     });
+// });
+
+//REGISTER: ASYNC AWAIT TRY & CATCH
+router.post("/register", async (req, res) => {
   let user = req.body;
   console.log(user);
   // //hash the password
   const hash = bcrypt.hashSync(user.password, 4);
   user.password = hash;
   //post user
-  Users.add(user)
-    .then(saved => {
-      console.log(saved);
-      res.status(201).json(saved);
-    })
-    .catch(error => {
-      res.status(500).json(error);
-    });
+
+  try {
+    const saved = await Users.add(user);
+    console.log(user);
+    res.status(201).json(saved);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
 });
 
-//login using user name and password
+//LOGIN: THEN & CATCH
 router.post("/login", (req, res) => {
   let { name, password } = req.body;
   console.log(name, password);
@@ -40,6 +59,8 @@ router.post("/login", (req, res) => {
       res.status(500).json(error);
     });
 });
+
+//LOGIN: ASYNC & AWAIT
 
 router.get("/logout", (req, res) => {
   req.session.destroy(err => {
