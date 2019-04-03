@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
-const db = require("../data/dbConfig.js");
 const Users = require("../users/users-model.js");
 
 //register new username and password
@@ -27,7 +26,6 @@ router.post("/login", (req, res) => {
   console.log(name, password);
 
   Users.findBy({ name })
-    .first()
     .then(user => {
       //check password against db
       console.log(user);
